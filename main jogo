@@ -1,0 +1,378 @@
+import pygame,sys
+pygame.init() 
+from pygame.locals import* 
+import random
+import math
+import time
+screen = pygame.display.set_mode((798,600))
+
+
+pygame.mixer.init()
+
+
+pygame.display.set_caption('jogo do carro')
+
+#logo del juego
+logo = pygame.image.load('logo.jpeg')
+pygame.display.set_icon(logo)
+
+
+############ CREAR PANTALLA DE INTRODUCCIÓN  ###########
+IntroFont = pygame.font.Font("freesansbold.ttf",39)
+def introImg(x,y):
+    intro = pygame.image.load("introfd.jpg")
+    
+    screen.blit(intro,(x,y))
+
+
+def play(x,y):
+    playtext = IntroFont.render("PLAY",True,(255,0,0))
+    screen.blit (playtext,(x,y))
+
+
+def introscreen():
+    run = True
+    pygame.mixer.music.load('startingMusic.mp3')
+    pygame.mixer.music.play()
+    while run :
+        screen.fill((0,0,0))
+        introImg(0,0)
+        play(100,450)
+        
+
+        ####### cordenadas del mause #######
+        x,y = pygame.mouse.get_pos()
+
+        ###### almacenar coordenadas de rectángulos (x, y, longitud, altura) creando variables #######
+        button1 = pygame.Rect(60,440,175,50)
+        
+
+        
+        pygame.draw.rect(screen, (255,255,255), button1,6)
+        
+
+        #### si nuestro cursor está en el botón 1, que es el botón PLAY
+        if button1.collidepoint(x,y):
+        
+            pygame.draw.rect(screen, (155,0,0), button1,6)
+       
+            if click:
+                countdown() 
+        
+        click = False
+        for event in pygame.event.get():
+         if event.type == pygame.QUIT:
+            run = False
+         if event.type == pygame.MOUSEBUTTONDOWN:
+             if event.button == 1:
+                 click = True
+        pygame.display.update()
+
+  ###### cuenta ######
+def countdown():
+    font2 = pygame.font.Font('freesansbold.ttf', 85)
+    countdownBacground = pygame.image.load('bg.png')
+    three = font2.render('3',True, (187,30,16))
+    two =   font2.render('2',True, (255,255,0))
+    one =   font2.render('1',True, (51,165,50))
+    go =    font2.render('GO!!!',True, (0,255,0))
+    
+    
+
+               
+    screen.blit(countdownBacground, (0,0))
+    pygame.display.update()
+
+    
+    screen.blit(three,(350,250))
+    pygame.display.update()
+    time.sleep(1)
+
+   
+    screen.blit(countdownBacground, (0,0))
+    pygame.display.update()
+    time.sleep(1)
+
+    
+    screen.blit(two,(350,250))
+    pygame.display.update()
+    time.sleep(1)
+
+   
+    screen.blit(countdownBacground, (0,0))
+    pygame.display.update()
+    time.sleep(1)
+
+    screen.blit(one,(350,250))
+    pygame.display.update()
+    time.sleep(1)
+
+  
+    screen.blit(countdownBacground, (0,0))
+    pygame.display.update()
+    time.sleep(1)
+
+       
+    screen.blit(go,(300,250))
+    pygame.display.update()
+    time.sleep(1)
+    gameloop() 
+    pygame.display.update()
+
+
+
+def gameloop():
+
+      
+    pygame.mixer.music.load('BackgroundMusic.mp3')
+    pygame.mixer.music.play()
+    
+    crash_sound = pygame.mixer.Sound('car_crash.wav')
+
+    
+    score_value = 0
+    font1= pygame.font.Font("freesansbold.ttf",25)
+
+    def show_score(x,y):
+        score = font1.render("puntaje: "+ str(score_value), True, (255,0,0))
+        screen.blit(score, (x,y))
+
+    
+    with open ("puntaje.txt","r") as f:
+            highscore = f.read()
+    def show_highscore(x,y):
+        Hiscore_text = font1.render('puntaje maximo :' + str(highscore),True,(255,0,0))
+        screen.blit (Hiscore_text,(x,y))
+        pygame.display.update()
+    
+    
+
+    def gameover():
+        gameoverImg = pygame.image.load("gameover.png")
+        run = True
+        while run:
+
+            screen.blit(gameoverImg,(0,0))
+            time.sleep(0.5)
+            show_score(330,400)
+            time.sleep(0.5)
+            show_highscore(330,450)
+            pygame.display.update()
+            
+            for event in pygame.event.get():
+             if event.type == pygame.QUIT:
+                run = False
+                pygame.quit()
+                sys.exit()
+             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    countdown()
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+        
+    
+    
+    bg = pygame.image.load('bg.png')
+    
+    
+  
+    maincar = pygame.image.load('car.png')
+    maincarX = 350
+    maincarY = 495
+    maincarX_change = 0
+    maincarY_change = 0
+
+    
+    car1 = pygame.image.load('car1.jpeg')
+    car1X = random.randint(178,490)
+    car1Y = 100
+    car1Ychange = 10    
+    car2 = pygame.image.load('car2.png')
+    car2X = random.randint(178,490)
+    car2Y = 100
+    car2Ychange = 10
+
+    car3 = pygame.image.load('car3.png')
+    car3X = random.randint(178,490)
+    car3Y = 100
+    car3Ychange = 10
+       
+
+    run = True
+    while run:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+                pygame.quit()
+                sys.exit()
+
+            if event.type == pygame.KEYDOWN: 
+                if event.key == pygame.K_RIGHT:
+                    maincarX_change += 5
+            
+                if event.key == pygame.K_LEFT:
+                    maincarX_change -= 5
+                
+                if event.key == pygame.K_UP:
+                    maincarY_change -= 5
+                    
+                if event.key == pygame.K_DOWN:
+                    maincarY_change += 5
+
+            if event.type == pygame.KEYUP: 
+                if event.key == pygame.K_RIGHT:
+                    maincarX_change = 0
+            
+                if event.key == pygame.K_LEFT:
+                    maincarX_change = 0
+                
+                if event.key == pygame.K_UP:
+                    maincarY_change = 0
+                    
+                if event.key == pygame.K_DOWN:
+                    maincarY_change = 0            
+        if maincarX < 178:
+            maincarX = 178
+        if maincarX > 490:
+            maincarX = 490
+        
+        if maincarY < 0:
+            maincarY = 0
+        if maincarY > 495:
+            maincarY = 495
+
+        screen.fill((0,0,0))
+
+
+        screen.blit(bg,(0,0))
+
+
+        screen.blit(maincar,(maincarX,maincarY))
+        screen.blit(car1,(car1X,car1Y))
+        screen.blit(car2,(car2X,car2Y))
+        screen.blit(car3,(car3X,car3Y))
+  
+        show_score(570,280)
+   
+        show_highscore(0,0)
+
+        maincarX += maincarX_change
+        maincarY += maincarY_change
+
+        car1Y += car1Ychange
+        car2Y += car2Ychange
+        car3Y += car3Ychange
+
+        if car1Y > 670:
+            car1Y = -100
+            car1X = random.randint(178,490)
+            score_value += 1
+        if car2Y > 670:
+            car2Y = -150
+            car2X = random.randint(178,490)
+            score_value += 1
+        if car3Y > 670:
+            car3Y = -200
+            car3X = random.randint(178,490)
+            score_value += 1
+
+        if score_value > int(highscore):
+            highscore = score_value
+
+          
+        def iscollision(car1X,car1Y,maincarX,maincarY):
+            distance = math.sqrt(math.pow(car1X-maincarX,2) + math.pow(car1Y - maincarY,2)) 
+
+            
+            if distance < 50: 
+                return True
+            else:
+                return False
+
+        def iscollision(car2X,car2Y,maincarX,maincarY):
+            distance = math.sqrt(math.pow(car2X-maincarX,2) + math.pow(car2Y - maincarY,2))
+
+            if distance < 50:
+                return True
+            else:
+                return False
+
+        def iscollision(car3X,car3Y,maincarX,maincarY):
+            distance = math.sqrt(math.pow(car3X-maincarX,2) + math.pow(car3Y - maincarY,2))
+
+            if distance < 50:
+                return True
+            else:
+                return False
+        
+        ##### dando colisión a una variable #####
+   
+        coll1 = iscollision(car1X,car1Y,maincarX,maincarY) 
+
+        coll2 = iscollision(car2X,car2Y,maincarX,maincarY) 
+    
+        coll3 = iscollision(car3X,car3Y,maincarX,maincarY) 
+
+        if coll1: 
+            
+            
+            car1Ychange = 0
+            car2Ychange = 0
+            car3Ychange = 0
+            car1Y = 0
+            car2Y = 0
+            car3Y = 0
+            maincarX_change = 0
+            maincarY_change = 0
+            pygame.mixer.music.stop()
+            crash_sound.play()
+
+            time.sleep(1)
+            gameover()
+          
+        if coll2:
+           
+            
+            car1Ychange = 0
+            car2Ychange = 0
+            car3Ychange = 0
+            car1Y = 0
+            car2Y = 0
+            car3Y = 0
+            maincarX_change = 0
+            maincarY_change = 0
+            pygame.mixer.music.stop()
+            crash_sound.play()
+        
+            time.sleep(1)
+            gameover()
+        ############ 
+       
+        if coll3:
+            
+           
+            car1Ychange = 0
+            car2Ychange = 0
+            car3Ychange = 0
+            car1Y = 0
+            car2Y = 0
+            car3Y = 0
+            maincarX_change = 0
+            maincarY_change = 0
+            pygame.mixer.music.stop()
+            crash_sound.play()
+        
+            time.sleep(1)
+            gameover()
+        
+        if car1Ychange == 0 and car2Ychange == 0 and car3Ychange == 0 :
+          pass
+            
+        
+        with open ("puntaje.txt","w") as f:
+            f.write(str(highscore))
+        
+
+        pygame.display.update()
+introscreen()
